@@ -10,30 +10,56 @@ from jinja2 import Environment, PackageLoader
 
 # Local Library
 from frozn.builder.utils import slugify
-
+from frozn.exceptions import NoRootDirectory
 from frozn.builder.extensions import CodeBlock
 
 
 
 class FroznBase(object):
+    '''
+    Frozn base class
+    bartz_root = /Users/bartz/Code/repo/blog/
+    '''
     def __init__(self,
-                site_directory='/Users/bartz/Code/repo/blog/frozn/_deploy/',
-                static_files_source='/Users/bartz/Code/repo/blog/frozn/static/',
+                root=None
+                site_directory='frozn/_deploy/',
+                static_files_source='frozn/static/',
+                posts_directory='frozn/site/posts/',
+                templates_directory='frozn/templates/',
                 static_directory='static',
-                posts_directory='/Users/bartz/Code/repo/blog/frozn/site/posts/',
-                templates_directory='/Users/bartz/Code/repo/blog/frozn/templates/',
                 *args,
                 **kwargs):
+        '''
+        Initializes all Frozn classes
+        
+        Required Param(s)
+        :: root
+        Root directory where your app lives
+            !! For now, you must pass in the root app directory when the class is initialized.
+            !! Will be changed in later version, need to explore os more
+        
+        Optional Params
+            !! Coming in next version
+        '''
         # Set initial args and kwargs
         self.args = args
         self.kwargs = kwargs
-        
+        if not root:
+            raise NoRootDirectory('Please pass a root directory to the class instantiation as keyword "root"')
+            
         # Set Frozn specific variables
-        self.site_directory = site_directory
-        self.static_files_source = static_files_source
+        #   These are very explicit, if not set, app will fail to work
+        
+        self.site_directory = '%s/%s' % (root, site_directory)
+        
+        self.static_files_source = '%s/%s' % (root, static_files_source)
+        
+        self.posts_directory = '%s/%s' % (root, posts_directory)
+        
+        self.templates_directory ='%s/%s' % (root, templates_directory)
+
         self.static_directory = static_directory
-        self.posts_directory = posts_directory
-        self.templates_directory = templates_directory
+        
 
 class Site(FroznBase):
         

@@ -7,6 +7,13 @@ Simple blog generator that:
 * has built in code blocks (with Solarized styling)
 * supports static media and custom javascript
 
+# Installation
+
+Coming soon!
+
+# Using
+
+Coming soon!
 
 ## Changelog
 
