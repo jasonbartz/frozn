@@ -1,0 +1,52 @@
+{% extends 'templates/post.html' %}
+{% block headline %}Configuring Coda and SFTP to work with Amazon AWS{% endblock headline %}
+{% block datetime %}2011-2-4 {% endblock datetime %}
+{% block post_body %}
+<p>This has been driving me crazy for a while so I spent a bit hunkering down to get these pieces into place.</p>
+<p><strong>The problem</strong></p>
+<p>You use Amazon AWS for your sweet apps and maybe do a bit of development in the cloud.  You want an easy way to transfer files without dragging and dropping.</p>
+<p><strong>Requirements</strong></p>
+<p>Amazon AWS Server</p>
+<p>Coda (Mac OSX)</p>
+<p>vim</p>
+<p><strong>The configuration</strong></p>
+<p>This config is specifically for Coda, however, I imagine it will work for other editors with SFTP ability.</p>
+<p>First off, <a href="http://docs.amazonwebservices.com/AWSEC2/latest/GettingStartedGuide/" target="_blank">make sure you have the .pem file from AWS. </a></p>
+<p>Copy that file to your ssh configuration direction</p>
+
+{% codeblock %}
+cp /path/to/your-keypair.pem ~/.ssh/your-keypair.pem
+{% endcodeblock %}
+
+<p>Next, add it to your ssh config file</p>
+
+{% codeblock %}
+vim ~/.ssh/config
+{% endcodeblock %}
+
+{% codeblock %}
+Host thenameyouwannause
+IdentityFile ~/.ssh/your-keypair.pem
+HostName ec2-xxx-xx-xxx-xx.compute-x.amazonaws.com
+User root
+{% endcodeblock %}
+
+<p>You&#8217;ll want to test it:</p>
+
+{% codeblock %}
+ssh thenameyouwannause
+{% endcodeblock %}
+
+<p>It should connect OK and get you to your server.  You may have to modify permissions on that file to get it to work properly.  If not, something is wrong and likely out of the scope of this article.</p>
+<p>Now you&#8217;ll want to add a site to Coda.</p>
+<p>The parts we care about:</p>
+<p><em>Connecting</em></p>
+<p><em>Terminal</em></p>
+<p>In the latest version of Coda, when you select SFTP, the <em>Terminal</em> should automatically reflect what you type under <em>Connecting</em>.</p>
+<p>First, change the Protocol to STFP.  Next to server type thenameyouwannause.  User name should be root.  Leave password blank and Port at 22.  Do not check the password prompt box.</p>
+<p>Fill in the other information and give it a shot.</p>
+<p>If you have issues, let me know in the comments.</p>
+<p><em>Sources</em></p>
+<p><a href="http://getsatisfaction.com/panic/topics/can_i_set_up_an_sftp_site_with_a_keypair_instead_of_a_password#  " target="_blank">http://getsatisfaction.com/panic/topics/can_i_set_up_an_sftp_site_with_a_keypair_instead_of_a_password#</a></p>
+<p><a href="http://jeffreysambells.com/posts/2010/08/04/connecting-to-amazon-ec2-using-transmit/" target="_blank">http://jeffreysambells.com/posts/2010/08/04/connecting-to-amazon-ec2-using-transmit/</a></p>
+{% endblock post_body %}

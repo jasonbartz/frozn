@@ -13,6 +13,8 @@ from frozn.builder.utils import slugify
 from frozn.builder.exceptions import NoRootDirectory
 from frozn.builder.extensions import CodeBlock
 
+from jinja2.ext import AutoEscapeExtension
+
 
 
 class FroznBase(object):
