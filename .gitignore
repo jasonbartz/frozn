@@ -1,4 +1,3 @@
 *.pyc
 .DS_Store
-frozn/_deploy
 *local_settings.py
