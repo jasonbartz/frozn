@@ -10,7 +10,7 @@ from jinja2 import Environment, PackageLoader
 
 # Local Library
 from frozn.builder.utils import slugify
-from frozn.exceptions import NoRootDirectory
+from frozn.builder.exceptions import NoRootDirectory
 from frozn.builder.extensions import CodeBlock
 
 
@@ -18,10 +18,10 @@ from frozn.builder.extensions import CodeBlock
 class FroznBase(object):
     '''
     Frozn base class
-    bartz_root = /Users/bartz/Code/repo/blog/
+    bartz_root = /Users/bartz/Code/repo/blog
     '''
     def __init__(self,
-                root=None
+                root=None,
                 site_directory='frozn/_deploy/',
                 static_files_source='frozn/static/',
                 posts_directory='frozn/site/posts/',
@@ -116,7 +116,10 @@ class Site(FroznBase):
         shutil.copytree(self.static_files_source, '%s/%s' % (self.site_directory,self.static_directory))
     
     def _reset(self):
-        shutil.rmtree(self.site_directory)
+        try:
+            shutil.rmtree(self.site_directory)
+        except OSError, e:
+            print e
         os.makedirs(self.site_directory)
         os.makedirs('%s/posts' % self.site_directory)
         
