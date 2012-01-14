@@ -143,11 +143,11 @@ class Post(FroznBase):
             month,
             day,
             post_time=None):
-        
+
         with open('%spost_base.html' % self.templates_directory, 'rb') as post_base:
             post_base_string = post_base.read()
             
-        post_datetime = '%s-%s-%s ' % (year, month, day)
+        post_datetime = '%s-%s-%s' % (year, month, day)
         if post_time:
             post_datetime = post_datetime + post_time
         

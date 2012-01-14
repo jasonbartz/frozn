@@ -1,0 +1,8 @@
+{% extends 'templates/post.html' %}
+{% block headline %}First Post{% endblock headline %}
+{% block datetime %}2012-1-19{% endblock datetime %}
+{% block post_body %}
+{% markdown %}
+
+{% markdown %}
+{% endblock post_body %}
