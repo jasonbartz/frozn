@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-    {% block static %}
+    
     <link rel="stylesheet" href="/static/bootstrap.min.css">
     <link rel="stylesheet" href="/static/frozn.css" type="text/css" media="all" />
     <link rel="stylesheet" href="/static/prettify/prettify.css" type="text/css" media="all" />
     <script type="text/javascript" src="/static/prettify/prettify.js"></script>
-    {% endblock static %}
+    
 </head>
 
 <body onload="prettyPrint()">
     <div class="container span8">
-        {% block header %}
+        
         <div class="header">
             <ul class="tabs">
               <li class="active"><a href="/">Blog</a></li>
@@ -22,12 +22,20 @@
             <h1>Jason Bartz</h1>
             
         </div>
-        {% endblock header %}
+        
         
         <div class="content">
-        {% block content %}
         
-        {% endblock content %}
+
+
+    <p><strong>2012-1-19  - </strong><a href="/posts/testing-markdown">testing-markdown</a></p>
+
+    <p><strong>2012-1-12  - </strong><a href="/posts/new-blog-design-and-infrastructure">new-blog-design-and-infrastructure</a></p>
+
+    <p><strong>2011-2-4  - </strong><a href="/posts/configuring-coda-and-sftp-to-work-with-amazon-aws">configuring-coda-and-sftp-to-work-with-amazon-aws</a></p>
+
+
+
         </div>
     </div>
 </body>

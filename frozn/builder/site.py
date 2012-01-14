@@ -11,16 +11,12 @@ from jinja2 import Environment, PackageLoader
 # Local Library
 from frozn.builder.utils import slugify
 from frozn.builder.exceptions import NoRootDirectory
-from frozn.builder.extensions import CodeBlock
-
-from jinja2.ext import AutoEscapeExtension
-
+from frozn.builder.extensions import CodeBlock, MarkDown
 
 
 class FroznBase(object):
     '''
     Frozn base class
-    bartz_root = /Users/bartz/Code/repo/blog
     '''
     def __init__(self,
                 root=None,
@@ -73,7 +69,7 @@ class Site(FroznBase):
         # Clear old site
         self._reset()
         # Set environments
-        site_env = Environment(loader=PackageLoader('frozn','.'), extensions=[CodeBlock])
+        site_env = Environment(loader=PackageLoader('frozn','.'), extensions=[CodeBlock, MarkDown])
         
         # Build Posts
         
@@ -82,37 +78,51 @@ class Site(FroznBase):
         # Sort Posts in descending order by date
         posts_list = sorted(posts_list, reverse=True)
         
+        # Create blank list to store template objcts
         post_templates = []
         
+        # Iterate through list of posts
         for post in posts_list:
+            # Create a blank dict to store information about the post
             post_template = {}
             
+            # Split the name of the post based on underbar
             post_date, post_name = post.split('_')
             
+            # Add post and metadata to dict
             post_template['template'] = site_env.get_template('site/posts/%s' % post)
             post_template['name'] = post_name
             post_template['date'] = post_date
-            print post_date
+            
+            print(post_date)
             post_templates.append(post_template)
-        
-        
-        # Render Latest Post
-        
-        
-        # Build Templates
-        template = site_env.get_template('templates/home.html')
         
         # Move Posts to _deploy directory
         for post in post_templates:
-            with open('%sposts/%s' %(self.site_directory,post['name']), 'wb') as write_post:
+            # Create directory for post to live inside.
+            #   This is so you can link without the .html
+            
+            post_directory = '%sposts/%s' % (self.site_directory, post['name'])
+            
+            os.makedirs(post_directory)
+            with open('%s/index.html' % post_directory, 'wb') as write_post:
                 post_base = site_env.get_template('templates/post_detail.html')
                 rendered_post = post['template'].render()
                 write_post.write(post_base.render(post=rendered_post))
         
         # Move Home to _deploy directory
-        with open('%s/home.html' % self.site_directory, 'wb') as write_home:
+        with open('%s/index.html' % self.site_directory, 'wb') as write_home:
             latest_post = post_templates[0]['template'].render()
-            write_home.write(template.render(latest_post=latest_post))
+            home = site_env.get_template('templates/home.html')
+            write_home.write(home.render(latest_post=latest_post,
+                                        latest_posts_list=post_templates[:5]))
+        
+        # Create archive page
+        archive_directory = '%sarchives' % (self.site_directory)
+        os.makedirs(archive_directory)
+        with open('%s/index.html' % archive_directory, 'wb') as write_archive:
+            archive = site_env.get_template('templates/archive.html')
+            write_archive.write(archive.render(post_list=post_templates))
         
         # Move static to _deploy directory
         shutil.copytree(self.static_files_source, '%s/%s' % (self.site_directory,self.static_directory))
@@ -145,5 +155,5 @@ class Post(FroznBase):
         
         filename = '%s_%s' % (post_datetime, slugify(headline))
         
-        with open('%s%s.html' % (self.posts_directory, filename), 'wb') as post_write:
+        with open('%s%s' % (self.posts_directory, filename), 'wb') as post_write:
             post_write.write(post)        

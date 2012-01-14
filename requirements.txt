@@ -3,3 +3,4 @@ ipython==0.11
 
 # App requirements
 Jinja2      # templates
+markdown    # formatting
