@@ -20,9 +20,9 @@ class FroznBase(object):
     '''
     def __init__(self,
                 root=None,
-                site_directory='frozn/_deploy/',
+                deploy_directory='frozn/_deploy/',
                 static_files_source='frozn/static/',
-                posts_directory='frozn/site/posts/',
+                site_directory='frozn/_site/',
                 templates_directory='frozn/templates/',
                 static_directory='static',
                 *args,
@@ -48,11 +48,11 @@ class FroznBase(object):
         # Set Frozn specific variables
         #   These are very explicit, if not set, app will fail to work
         
-        self.site_directory = '%s/%s' % (root, site_directory)
+        self.deploy_directory = '%s/%s' % (root, deploy_directory)
         
         self.static_files_source = '%s/%s' % (root, static_files_source)
         
-        self.posts_directory = '%s/%s' % (root, posts_directory)
+        self.site_directory = '%s/%s' % (root, site_directory)
         
         self.templates_directory ='%s/%s' % (root, templates_directory)
 
@@ -67,13 +67,13 @@ class Site(FroznBase):
             prints out html, css, js and folder directories
         '''
         # Clear old site
-        self._reset()
+        manager = Directory()
+        manager.reset_deploy_directory()
         # Set environments
-        site_env = Environment(loader=PackageLoader('frozn','.'), extensions=[CodeBlock, MarkDown])
+        deploy_env = Environment(loader=PackageLoader('frozn','.'), extensions=[CodeBlock, MarkDown])
         
         # Build Posts
-        
-        posts_list = os.listdir(self.posts_directory)
+        posts_list = os.listdir('%sposts/' % self.site_directory)
         
         # Sort Posts in descending order by date
         posts_list = sorted(posts_list, reverse=True)
@@ -90,7 +90,7 @@ class Site(FroznBase):
             post_date, post_name = post.split('_')
             
             # Add post and metadata to dict
-            post_template['template'] = site_env.get_template('site/posts/%s' % post)
+            post_template['template'] = deploy_env.get_template('site/posts/%s' % post)
             post_template['name'] = post_name
             post_template['date'] = post_date
             
@@ -102,38 +102,31 @@ class Site(FroznBase):
             # Create directory for post to live inside.
             #   This is so you can link without the .html
             
-            post_directory = '%sposts/%s' % (self.site_directory, post['name'])
+            post_directory = '%sposts/%s' % (self.deploy_directory, post['name'])
             
             os.makedirs(post_directory)
             with open('%s/index.html' % post_directory, 'wb') as write_post:
-                post_base = site_env.get_template('templates/post_detail.html')
+                post_base = deploy_env.get_template('templates/post_detail.html')
                 rendered_post = post['template'].render()
                 write_post.write(post_base.render(post=rendered_post))
         
         # Move Home to _deploy directory
-        with open('%s/index.html' % self.site_directory, 'wb') as write_home:
+        with open('%s/index.html' % self.deploy_directory, 'wb') as write_home:
             latest_post = post_templates[0]['template'].render()
-            home = site_env.get_template('templates/home.html')
+            home = deploy_env.get_template('templates/home.html')
             write_home.write(home.render(latest_post=latest_post,
                                         latest_posts_list=post_templates[:5]))
         
         # Create archive page
-        archive_directory = '%sarchives' % (self.site_directory)
+        archive_directory = '%sarchives' % (self.deploy_directory)
         os.makedirs(archive_directory)
         with open('%s/index.html' % archive_directory, 'wb') as write_archive:
-            archive = site_env.get_template('templates/archive.html')
+            archive = deploy_env.get_template('templates/archive.html')
             write_archive.write(archive.render(post_list=post_templates))
         
         # Move static to _deploy directory
-        shutil.copytree(self.static_files_source, '%s/%s' % (self.site_directory,self.static_directory))
+        shutil.copytree(self.static_files_source, '%s/%s' % (self.deploy_directory,self.static_directory))
     
-    def _reset(self):
-        try:
-            shutil.rmtree(self.site_directory)
-        except OSError, e:
-            print e
-        os.makedirs(self.site_directory)
-        os.makedirs('%s/posts' % self.site_directory)
         
 class Post(FroznBase):
     
@@ -155,5 +148,18 @@ class Post(FroznBase):
         
         filename = '%s_%s' % (post_datetime, slugify(headline))
         
-        with open('%s%s' % (self.posts_directory, filename), 'wb') as post_write:
-            post_write.write(post)        
+        with open('%sposts/%s' % (self.posts_directory, filename), 'wb') as post_write:
+            post_write.write(post)
+            
+class Directory(FroznBase):
+    '''
+    A helper class to manage directories for the app.
+        Creates directory trees.
+    '''
+    def reset_deploy_directory(self):
+        try:
+            shutil.rmtree(self.deploy_directory)
+        except OSError, e:
+            print e
+        os.makedirs(self.deploy_directory)
+        os.makedirs('%s/posts' % self.deploy_directory)
