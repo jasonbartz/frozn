@@ -2,3 +2,4 @@
 .DS_Store
 *local_settings.py
 *_deploy
+*_site
