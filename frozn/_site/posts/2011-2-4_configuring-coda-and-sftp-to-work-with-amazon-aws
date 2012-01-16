@@ -1,0 +1,71 @@
+{% extends 'templates/post.html' %}
+{% block headline %}Configuring Coda and SFTP to work with Amazon AWS{% endblock headline %}
+{% block datetime %}2011-2-4{% endblock datetime %}
+{% block post_body %}
+{% markdown %}
+
+This has been driving me crazy for a while so I spent a bit hunkering down to get these pieces into place.
+
+The problem
+
+You use Amazon AWS for your sweet apps and maybe do a bit of development in the cloud.  You want an easy way to transfer files without dragging and dropping.
+
+Requirements
+
+* Amazon AWS Server
+* Coda (Mac OSX)
+* vim
+
+The configuration
+
+This config is specifically for Coda, however, I imagine it will work for other editors with SFTP ability.
+
+First off, make sure you have the .pem file from AWS.
+
+Copy that file to your ssh configuration direction
+
+{% codeblock %}
+cp /path/to/your-keypair.pem ~/.ssh/your-keypair.pem
+{% endcodeblock %}
+
+Next, add it to your ssh config file
+
+{% codeblock %}
+vim ~/.ssh/config
+Host thenameyouwannause
+IdentityFile ~/.ssh/your-keypair.pem
+HostName ec2-xxx-xx-xxx-xx.compute-x.amazonaws.com
+User root
+{% endcodeblock %}
+
+You'll want to test it:
+
+{% codeblock %}
+ssh thenameyouwannause
+{% endcodeblock %}
+
+It should connect OK and get you to your server.  You may have to modify permissions on that file to get it to work properly.  If not, something is wrong and likely out of the scope of this article.
+
+Now you'll want to add a site to Coda.
+
+The parts we care about:
+
+* Connecting
+* Terminal
+
+In the latest version of Coda, when you select SFTP, the Terminal should automatically reflect what you type under Connecting.
+
+First, change the Protocol to STFP.  Next to server type thenameyouwannause.  User name should be root.  Leave password blank and Port at 22.  Do not check the password prompt box.
+
+Fill in the other information and give it a shot.
+
+If you have issues, let me know in the comments.
+
+Sources
+
+[http://getsatisfaction.com/panic/topics/can_i_set_up_an_sftp_site_with_a_keypair_instead_of_a_password](http://getsatisfaction.com/panic/topics/can_i_set_up_an_sftp_site_with_a_keypair_instead_of_a_password)
+
+[http://jeffreysambells.com/posts/2010/08/04/connecting-to-amazon-ec2-using-transmit/](http://jeffreysambells.com/posts/2010/08/04/connecting-to-amazon-ec2-using-transmit/)
+
+{% markdown %}
+{% endblock post_body %}

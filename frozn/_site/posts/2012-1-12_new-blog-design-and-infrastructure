@@ -1,0 +1,20 @@
+{% extends 'templates/post.html' %}
+{% block headline %}New blog design and infrastructure{% endblock headline %}
+{% block datetime %}2012-1-12{% endblock datetime %}
+{% block post_body %}
+{% markdown %}
+
+A brand new year and a brand new blog design.
+
+This blog is now a static site, powered by a custom static blog generator I wrote in Python called [Frozn](https://github.com/jasonbartz/frozn).
+
+It's a work in progress, but I wanted to get it out there for the beginning part of the new year.
+
+I've included one technical post from my old blog, which will soon be available at the archives when they are live, but for now, enjoy the design and the code.
+
+Design powered by [Twitter Bootstrap](http://twitter.github.com/bootstrap/).
+
+Blog powered by [Frozn](https://github.com/jasonbartz/frozn) and [Jinja2](http://jinja.pocoo.org/docs/)
+
+{% markdown %}
+{% endblock post_body %}
