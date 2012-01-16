@@ -15,8 +15,11 @@
         <div class="header">
             <ul class="tabs">
               <li class="active"><a href="/">Blog</a></li>
+              {% for nav_item in nav_list %}
+              <li><a href="{{ nav_item.link }}">{{ nav_item.text }}</li>
+              {% endfor %}
             </ul>
-            <h1>Name</h1>
+            <h1>{% block name %}{% endblock name %}</h1>
             
         </div>
         {% endblock header %}

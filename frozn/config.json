@@ -1,0 +1,19 @@
+{
+    "frozn-config": [
+        {
+            "name": "Name Namey"
+        },
+        {
+            "links": [
+                {
+                    "text": "@twitter",
+                    "link": "http://twitter.com"
+                },
+                {
+                    "text": "google",
+                    "link": "http://google.com"
+                }
+            ]
+        }
+    ]
+}
