@@ -1,5 +1,10 @@
 # Changelog
 
+v 0.0.4 alpha
+
+* Refactored render method inside Site class
+* Added pages
+
 v 0.0.3 alpha
 
 * Created generic container (with config file)

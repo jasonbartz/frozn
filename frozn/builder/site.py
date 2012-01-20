@@ -173,7 +173,7 @@ class Site(FroznBase):
         self._get_content()
         self._render()
         
-class Post(FroznBase):
+class Create(FroznBase):
     '''
     Class to create Posts and Pages
     #! Refactoring in v0.0.4
@@ -200,6 +200,14 @@ class Post(FroznBase):
         # Print template to site_directory
         with open('%sposts/%s' % (self.site_directory, filename), 'wb') as post_write:
             post_write.write(post)
+
+    #! Coming soon
+    # def page(self,
+    #         title,
+    #         year,
+    #         month,
+    #         day,
+    #         page_time=None):
             
 class Directory(FroznBase):
     '''

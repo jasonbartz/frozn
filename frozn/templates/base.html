@@ -19,7 +19,7 @@
               <li><a href="{{ nav_item.link }}">{{ nav_item.text }}</a></li>
               {% endfor %}
             </ul>
-            <h1>{{ name }}</h1>
+            <h1>{% block title %}{{ name }}{% endblock title %}</h1>
             
         </div>
         {% endblock header %}
