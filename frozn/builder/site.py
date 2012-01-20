@@ -64,6 +64,9 @@ class FroznBase(object):
 class Site(FroznBase):
 
     def _load_config(self):
+        '''
+        Loads external config files
+        '''
         with open(self.config_file,'rb') as open_config_object:
             self.configuration = json.loads(open_config_object.read())
             
@@ -72,23 +75,32 @@ class Site(FroznBase):
                 setattr(self, key, value)
     
     def _initialize_environment(self):
+        '''
+        Resets directories and initializes jinja template environment
+        '''
         # Clear old site
         manager = Directory(root=self.root)
         manager.reset_deploy_directory()
-
+        
+        # Load both the main template environement
+        #   And the site directory as locations
+        #   for frozn to look for templates
         self.deploy_env = Environment(
             loader = ChoiceLoader([
                 PackageLoader('frozn','.'),
                 FileSystemLoader(self.site_directory),
-            ]),
-        extensions=[CodeBlock, MarkDown])
+            ]),extensions=[CodeBlock, MarkDown])
+        
+        # Add configuration variables to the template globals
         self.deploy_env.globals.update({
             'name': self.name,
             'nav_list': self.links
         })
 
-    def _get_posts(self):
-        
+    def _get_content(self):
+        '''
+        Retrieve blog posts and pages from the posts template directory (site_directory)
+        '''
         # Build Posts
         posts_list = os.listdir('%sposts/' % self.site_directory)
         
@@ -117,6 +129,10 @@ class Site(FroznBase):
             self.post_templates = post_templates
         
     def _render(self):
+        '''
+        Render posts, pages and static files to the deploy_directory
+        #! Refactoring in v0.0.4
+        '''
         # Move Posts to _deploy directory
         for post in self.post_templates:
             # Create directory for post to live inside.
@@ -154,21 +170,25 @@ class Site(FroznBase):
         '''
         self._load_config()
         self._initialize_environment()
-        self._get_posts()
+        self._get_content()
         self._render()
         
 class Post(FroznBase):
-    
+    '''
+    Class to create Posts and Pages
+    #! Refactoring in v0.0.4
+    '''
     def post(self,
             headline,
             year,
             month,
             day,
             post_time=None):
-
+        # Open past_base template
         with open('%spost_base.html' % self.templates_directory, 'rb') as post_base:
             post_base_string = post_base.read()
-            
+        
+        # Add datetime and headline vars
         post_datetime = '%s-%s-%s' % (year, month, day)
         if post_time:
             post_datetime = post_datetime + post_time
@@ -177,6 +197,7 @@ class Post(FroznBase):
         
         filename = '%s_%s' % (post_datetime, slugify(headline))
         
+        # Print template to site_directory
         with open('%sposts/%s' % (self.site_directory, filename), 'wb') as post_write:
             post_write.write(post)
             
@@ -186,10 +207,12 @@ class Directory(FroznBase):
         Creates directory trees.
     '''
     def reset_deploy_directory(self):
+        # Remove current deploy directory
         try:
             shutil.rmtree(self.deploy_directory)
         except OSError, e:
             print e
+        # Make dirs needed for deployment
         os.makedirs(self.deploy_directory)
         os.makedirs('%s/posts' % self.deploy_directory)
         
