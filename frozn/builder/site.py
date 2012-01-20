@@ -4,9 +4,10 @@ Build the site
 # Standard Library
 import os
 import shutil
+import json
 
 # Third Party
-from jinja2 import Environment, PackageLoader
+from jinja2 import Environment, PackageLoader, ChoiceLoader, FileSystemLoader
 
 # Local Library
 from frozn.builder.utils import slugify
@@ -20,56 +21,72 @@ class FroznBase(object):
     '''
     def __init__(self,
                 root=None,
-                deploy_directory='frozn/_deploy/',
-                static_files_source='frozn/static/',
-                site_directory='frozn/_site/',
-                templates_directory='frozn/templates/',
-                static_directory='static',
-                *args,
                 **kwargs):
         '''
         Initializes all Frozn classes
         
-        Required Param(s)
+        Required Param
         :: root
         Root directory where your app lives
-            !! For now, you must pass in the root app directory when the class is initialized.
-            !! Will be changed in later version, need to explore os more
         
         Optional Params
-            !! Coming in next version
+        :: deploy_directory
+        Where to render the deployable static files
+        
+        :: static_files_source
+        Where the static files (js/css) are stored
+        
+        :: site_directory
+        Where the site information, posts/pages, are stored
+        
+        :: templates_directory
+        Where the jinja templates are stored
         '''
         # Set initial args and kwargs
-        self.args = args
-        self.kwargs = kwargs
+        
+        initial_kwargs = {
+            'deploy_directory': '%s/_deploy/' % root,
+            'static_files_source': '%s/static/' % root,
+            'site_directory': '%s/_site/' % root,
+            'templates_directory': '%s/templates/' % root,
+            'static_directory': 'static',
+            'config_file': '%s/config.json' % root,
+        }
+        initial_kwargs.update(kwargs)
+        for key, value in initial_kwargs.iteritems():
+            setattr(self, key, value)
+        
         if not root:
             raise NoRootDirectory('Please pass a root directory to the class instantiation as keyword "root"')
         else:
             self.root = root
-        # Set Frozn specific variables
-        #   These are very explicit, if not set, app will fail to work
-        
-        self.deploy_directory = '%s/%s' % (root, deploy_directory)
-        
-        self.static_files_source = '%s/%s' % (root, static_files_source)
-        
-        self.site_directory = '%s/%s' % (root, site_directory)
-        
-        self.templates_directory ='%s/%s' % (root, templates_directory)
-
-        self.static_directory = static_directory
-        
 
 class Site(FroznBase):
-        
+
+    def _load_config(self):
+        with open(self.config_file,'rb') as open_config_object:
+            self.configuration = json.loads(open_config_object.read())
+            
+        for config_item in self.configuration['frozn-config']:
+            for key, value in config_item.iteritems():
+                setattr(self, key, value)
+    
     def _initialize_environment(self):
         # Clear old site
         manager = Directory(root=self.root)
         manager.reset_deploy_directory()
-        
-        # Set environments
-        self.deploy_env = Environment(loader=PackageLoader('frozn','.'), extensions=[CodeBlock, MarkDown])
-        
+
+        self.deploy_env = Environment(
+            loader = ChoiceLoader([
+                PackageLoader('frozn','.'),
+                FileSystemLoader(self.site_directory),
+            ]),
+        extensions=[CodeBlock, MarkDown])
+        self.deploy_env.globals.update({
+            'name': self.name,
+            'nav_list': self.links
+        })
+
     def _get_posts(self):
         
         # Build Posts
@@ -90,7 +107,7 @@ class Site(FroznBase):
             post_date, post_name = post.split('_')
             
             # Add post and metadata to dict
-            post_template['template'] = self.deploy_env.get_template('/_site/posts/%s' % post)
+            post_template['template'] = self.deploy_env.get_template('posts/%s' % post)
             post_template['name'] = post_name
             post_template['date'] = post_date
             
@@ -105,7 +122,7 @@ class Site(FroznBase):
             # Create directory for post to live inside.
             #   This is so you can link without the .html
             
-            post_directory = '%sposts/%s' % (self.deploy_directory, post['name'])
+            post_directory = '%s/posts/%s' % (self.deploy_directory, post['name'])
             
             os.makedirs(post_directory)
             with open('%s/index.html' % post_directory, 'wb') as write_post:
@@ -121,7 +138,7 @@ class Site(FroznBase):
                                         latest_posts_list=self.post_templates[:5]))
         
         # Create archive page
-        archive_directory = '%sarchives' % (self.deploy_directory)
+        archive_directory = '%s/archives' % (self.deploy_directory)
         os.makedirs(archive_directory)
         with open('%s/index.html' % archive_directory, 'wb') as write_archive:
             archive = self.deploy_env.get_template('templates/archive.html')
@@ -135,6 +152,7 @@ class Site(FroznBase):
         Method that compiles that site,
             prints out html, css, js and folder directories
         '''
+        self._load_config()
         self._initialize_environment()
         self._get_posts()
         self._render()

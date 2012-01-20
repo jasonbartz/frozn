@@ -17,6 +17,12 @@ Coming soon!
 
 ## Changelog
 
+v 0.0.3 alpha
+
+* Created generic container (with config file)
+* moved local deploy directories to gh-pages branch
+* Reworked class instantiation variables
+
 v 0.0.2 pre-alpha
 
 * Added markdown

@@ -16,10 +16,10 @@
             <ul class="tabs">
               <li class="active"><a href="/">Blog</a></li>
               {% for nav_item in nav_list %}
-              <li><a href="{{ nav_item.link }}">{{ nav_item.text }}</li>
+              <li><a href="{{ nav_item.link }}">{{ nav_item.text }}</a></li>
               {% endfor %}
             </ul>
-            <h1>{% block name %}{% endblock name %}</h1>
+            <h1>{{ name }}</h1>
             
         </div>
         {% endblock header %}
