@@ -1,9 +1,11 @@
 # Changelog
 
-v 0.0.4 alpha
+
+v 0.0.4 alpha (coming soon!)
 
 * Refactored render method inside Site class
 * Added pages
+* Added custom JS/CSS in config
 
 v 0.0.3 alpha
 
