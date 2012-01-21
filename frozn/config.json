@@ -14,6 +14,19 @@
                     "link": "http://google.com"
                 }
             ]
+        },
+        {
+            "javascript": [
+                "prettify/prettify.js",
+                "prettify/lang-css.js"
+            ]
+        },
+        {
+            "css": [
+                "frozn.css",
+                "prettfy/prettify.css"
+                
+            ]
         }
     ]
 }
