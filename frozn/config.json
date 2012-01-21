@@ -10,6 +10,21 @@
                     "link": "http://twitter.com/jasonbartz"
                 }
             ]
+        },
+        {
+            "javascript": [
+                "google_analytics.js",
+                "prettify/prettify.js",
+                "prettify/lang-css.js"
+            ]
+        },
+        {
+            "css": [
+                "bootstrap.min.css",
+                "jasonbartz.css",
+                "prettfy/prettify.css"
+                
+            ]
         }
     ]
 }

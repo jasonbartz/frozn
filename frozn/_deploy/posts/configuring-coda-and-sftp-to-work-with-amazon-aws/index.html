@@ -2,11 +2,26 @@
 <html>
 <head>
     
+    
+    
     <link rel="stylesheet" href="/static/bootstrap.min.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="/static/frozn.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="/static/prettify/prettify.css" type="text/css" media="all" />
+    
+    <link rel="stylesheet" href="/static/jasonbartz.css" type="text/css" media="all" />
+    
+    <link rel="stylesheet" href="/static/prettfy/prettify.css" type="text/css" media="all" />
+    
+    
+    
+    
+    <script type="text/javascript" src="/static/google_analytics.js"></script>
+    
     <script type="text/javascript" src="/static/prettify/prettify.js"></script>
     
+    <script type="text/javascript" src="/static/prettify/lang-css.js"></script>
+    
+    
+    
+
 </head>
 
 <body onload="prettyPrint()">
@@ -46,31 +61,28 @@
 <p>This config is specifically for Coda, however, I imagine it will work for other editors with SFTP ability.</p>
 <p>First off, make sure you have the .pem file from AWS.</p>
 <p>Copy that file to your ssh configuration direction</p><div class="codeblock">
-                                            <pre class="prettyprint">
-                                                
+        <pre class="prettyprint">
+            
 cp /path/to/your-keypair.pem ~/.ssh/your-keypair.pem
 
-                                            </pre>
-                               </div>
-                            <p>Next, add it to your ssh config file</p><div class="codeblock">
-                                            <pre class="prettyprint">
-                                                
+       </pre>
+   </div><p>Next, add it to your ssh config file</p><div class="codeblock">
+        <pre class="prettyprint">
+            
 vim ~/.ssh/config
 Host thenameyouwannause
 IdentityFile ~/.ssh/your-keypair.pem
 HostName ec2-xxx-xx-xxx-xx.compute-x.amazonaws.com
 User root
 
-                                            </pre>
-                               </div>
-                            <p>You'll want to test it:</p><div class="codeblock">
-                                            <pre class="prettyprint">
-                                                
+       </pre>
+   </div><p>You'll want to test it:</p><div class="codeblock">
+        <pre class="prettyprint">
+            
 ssh thenameyouwannause
 
-                                            </pre>
-                               </div>
-                            <p>It should connect OK and get you to your server.  You may have to modify permissions on that file to get it to work properly.  If not, something is wrong and likely out of the scope of this article.</p>
+       </pre>
+   </div><p>It should connect OK and get you to your server.  You may have to modify permissions on that file to get it to work properly.  If not, something is wrong and likely out of the scope of this article.</p>
 <p>Now you'll want to add a site to Coda.</p>
 <p>The parts we care about:</p>
 <ul>
