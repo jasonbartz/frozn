@@ -73,6 +73,7 @@ class Site(FroznBase):
         for config_item in self.configuration['frozn-config']:
             for key, value in config_item.iteritems():
                 setattr(self, key, value)
+
     
     def _initialize_environment(self):
         '''
@@ -94,7 +95,9 @@ class Site(FroznBase):
         # Add configuration variables to the template globals
         self.deploy_env.globals.update({
             'name': self.name,
-            'nav_list': self.links
+            'nav_list': self.links,
+            'javascript': self.javascript,
+            'css': self.css, 
         })
 
     def _get_content(self):

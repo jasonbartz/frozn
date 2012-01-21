@@ -2,11 +2,23 @@
 <html>
 <head>
     {% block static %}
-    <link rel="stylesheet" href="/static/bootstrap.min.css" type="text/css" media="all" />
+    {% if css %}
+    {% for css_item in css %}
+    <link rel="stylesheet" href="/static/{{ css_item }}" type="text/css" media="all" />
+    {% endfor %}
+    {% else %}
     <link rel="stylesheet" href="/static/frozn.css" type="text/css" media="all" />
     <link rel="stylesheet" href="/static/prettify/prettify.css" type="text/css" media="all" />
+    {% endif %}
+    {% if javascript %}
+    {% for javascript_item in javascript %}
+    <script type="text/javascript" src="/static/{{ javascript_item }}"></script>
+    {% endfor %}
+    {% else %}
     <script type="text/javascript" src="/static/prettify/prettify.js"></script>
+    {% endif %}
     {% endblock static %}
+
 </head>
 
 <body onload="prettyPrint()">
