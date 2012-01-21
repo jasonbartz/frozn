@@ -22,7 +22,7 @@
             "css": [
                 "bootstrap.min.css",
                 "jasonbartz.css",
-                "prettfy/prettify.css"
+                "prettify/prettify.css"
                 
             ]
         }
