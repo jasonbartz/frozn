@@ -5,6 +5,7 @@ Build the site
 import os
 import shutil
 import json
+import cStringIO
 
 # Third Party
 from jinja2 import Environment, PackageLoader, ChoiceLoader, FileSystemLoader
@@ -80,7 +81,7 @@ class Site(FroznBase):
         Resets directories and initializes jinja template environment
         '''
         # Clear old site
-        manager = Directory(root=self.root)
+        manager = Directory()
         manager.reset_deploy_directory()
         
         # Load both the main template environement
@@ -140,31 +141,57 @@ class Site(FroznBase):
         for post in self.post_templates:
             # Create directory for post to live inside.
             #   This is so you can link without the .html
-            
-            post_directory = '%s/posts/%s' % (self.deploy_directory, post['name'])
-            
-            os.makedirs(post_directory)
-            with open('%s/index.html' % post_directory, 'wb') as write_post:
-                post_base = self.deploy_env.get_template('templates/post_detail.html')
-                rendered_post = post['template'].render()
-                write_post.write(post_base.render(post=rendered_post))
+            post_object = cStringIO.StringIO()
+            post_base = self.deploy_env.get_template('templates/post_detail.html')
+            rendered_post = post['template'].render()
+            post_object.write(post_base.render(post=rendered_post))
+            post['rendered'] = post_object
         
-        # Move Home to _deploy directory
-        with open('%s/index.html' % self.deploy_directory, 'wb') as write_home:
-            latest_post = self.post_templates[0]['template'].render()
-            home = self.deploy_env.get_template('templates/home.html')
-            write_home.write(home.render(latest_post=latest_post,
-                                        latest_posts_list=self.post_templates[:5]))
+        # Render home
+        home_object = cStringIO.StringIO()
+        latest_post = self.post_templates[0]['template'].render()
+        home = self.deploy_env.get_template('templates/home.html')
+        home_object.write(home.render(latest_post=latest_post,
+                                    latest_posts_list=self.post_templates[:5]))
+        self.home_object = home_object
         
         # Create archive page
-        archive_directory = '%s/archives' % (self.deploy_directory)
-        os.makedirs(archive_directory)
-        with open('%s/index.html' % archive_directory, 'wb') as write_archive:
-            archive = self.deploy_env.get_template('templates/archive.html')
-            write_archive.write(archive.render(post_list=self.post_templates))
+        archive_object = cStringIO.StringIO()
+        archive = self.deploy_env.get_template('templates/archive.html')
+        archive_object.write(archive.render(post_list=self.post_templates))
+        self.archive_object = archive_object
+    
+    def _write(self):
+        '''
+        Write the rendered files to the deploy directory
+        '''
+        # Write Posts
+        for post in self.post_templates:
+            post_directory = '%sposts/%s' % (self.deploy_directory, post['name'])
+            self._write_file(post['rendered'], post_directory)
         
-        # Move static to _deploy directory
+        # Write Pages
+        
+        # Write Archive
+        archive_directory = '%s/archives' % (self.deploy_directory)
+        self._write_file(self.archive_object, archive_directory)
+        
+        # Write Home
+        self._write_file(self.home_object, self.deploy_directory)
+        
+        # Static
         shutil.copytree(self.static_files_source, '%s/%s' % (self.deploy_directory,self.static_directory))
+        
+    def _write_file(self, file_object, directory):
+        '''
+        Write an individual file to a directory
+        '''
+        try:
+            os.makedirs(directory)
+        except OSError, e:
+            print e
+        with open('%s/index.html' % directory, 'wb') as f_input:
+            f_input.write(file_object.getvalue())
         
     def build(self):
         '''
@@ -175,6 +202,7 @@ class Site(FroznBase):
         self._initialize_environment()
         self._get_content()
         self._render()
+        self._write()
         
 class Create(FroznBase):
     '''
@@ -212,7 +240,7 @@ class Create(FroznBase):
     #         day,
     #         page_time=None):
             
-class Directory(FroznBase):
+class Directory(object):
     '''
     A helper class to manage directories for the app.
         Creates directory trees.
