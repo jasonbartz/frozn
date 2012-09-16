@@ -201,6 +201,14 @@ class Site(FroznBase):
         self._render()
         self._write()
 
+    def new(self):
+        """
+        Method for building a new site
+
+        Requires an empty directory
+        """
+        raise NotImplemented("Not implemented yet.")
+
 class Create(FroznBase):
     """
     Class to create Posts and Pages
@@ -231,13 +239,14 @@ class Create(FroznBase):
         with open('%sposts/%s' % (self.site_directory, filename), 'wb') as post_write:
             post_write.write(post)
 
-    #! Coming soon
-    # def page(self,
-    #         title,
-    #         year,
-    #         month,
-    #         day,
-    #         page_time=None):
+    def page(self,
+            title,
+            year,
+            month,
+            day,
+            page_time=None):
+
+        raise NotImplemented("Not implemented yet.")
 
 class Directory(object):
     """

@@ -1,5 +1,5 @@
 # Utilities
-ipython==0.11
+ipython
 
 # App requirements
 Jinja2      # templates

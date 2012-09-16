@@ -1,21 +1,17 @@
 {
     "frozn-config": [
         {
-            "name": "Jason Bartz"
+            "name": "Site Name"
         },
         {
             "links": [
                 {
-                    "text": "@jasonbartz",
-                    "link": "http://twitter.com/jasonbartz"
+                    "text": "@twitter",
+                    "link": "http://twitter.com/"
                 },
                 {
                     "text": "Github",
-                    "link": "http://github.com/jasonbartz"
-                },
-                {
-                    "text": "Project September",
-                    "link": "http://jasonbartz.com/project-september"
+                    "link": "http://github.com/"
                 }
 
             ]
@@ -24,14 +20,12 @@
             "javascript": [
                 "prettify/prettify.js",
                 "prettify/lang-css.js",
-                "jquery-1.8.1.min.js",
-                "bootstrap/js/bootstrap.js"
             ]
         },
         {
             "css": [
                 "prettify/prettify.css",
-                "bootstrap_old.min.css",
+                "bootstrap.1.x.min.css",
                 "frozn.css"
             ]
         }
