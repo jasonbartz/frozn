@@ -2,11 +2,18 @@
 <html>
 <head>
     {% block static %}
-    <link rel="stylesheet" href="/static/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/frozn.css" type="text/css" media="all" />
-    <link rel="stylesheet" href="/static/prettify/prettify.css" type="text/css" media="all" />
-    <script type="text/javascript" src="/static/prettify/prettify.js"></script>
+    {% if css %}
+    {% for css_item in css %}
+    <link rel="stylesheet" href="/static/{{ css_item }}" type="text/css" media="all" />
+    {% endfor %}
+    {% endif %}
+    {% if javascript %}
+    {% for javascript_item in javascript %}
+    <script type="text/javascript" src="/static/{{ javascript_item }}"></script>
+    {% endfor %}
+    {% endif %}
     {% endblock static %}
+
 </head>
 
 <body onload="prettyPrint()">
@@ -14,19 +21,19 @@
         {% block header %}
         <div class="header">
             <ul class="tabs">
-              <li class="active"><a href="#">Blog</a></li>
-              <!--<li><a href="#">Portfolio <span class="label warning">External</span></a></li>-->
-              <li><a target="_blank" href="http://twitter.com/jasonbartz">@jasonbartz <span class="label warning">External</span></a></li>
-              <!--<li><a href="#">Contact</a></li>-->
+              <li class="active"><a href="/">Blog</a></li>
+              {% for nav_item in nav_list %}
+              <li><a href="{{ nav_item.link }}">{{ nav_item.text }}</a></li>
+              {% endfor %}
             </ul>
-            <h1>Jason Bartz</h1>
+            <h1>{% block title %}{{ name }}{% endblock title %}</h1>
             
         </div>
         {% endblock header %}
         
         <div class="content">
         {% block content %}
-        
+
         {% endblock content %}
         </div>
     </div>

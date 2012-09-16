@@ -15,8 +15,3 @@ Coming soon!
 
 Coming soon!
 
-## Changelog
-
-v 0.0.1 pre-alpha
-
-* First working version

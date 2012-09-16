@@ -2,11 +2,28 @@
 <html>
 <head>
     
-    <link rel="stylesheet" href="/static/bootstrap.min.css">
-    <link rel="stylesheet" href="/static/frozn.css" type="text/css" media="all" />
+    
+    
     <link rel="stylesheet" href="/static/prettify/prettify.css" type="text/css" media="all" />
+    
+    <link rel="stylesheet" href="/static/bootstrap_old.min.css" type="text/css" media="all" />
+    
+    <link rel="stylesheet" href="/static/frozn.css" type="text/css" media="all" />
+    
+    
+    
+    
     <script type="text/javascript" src="/static/prettify/prettify.js"></script>
     
+    <script type="text/javascript" src="/static/prettify/lang-css.js"></script>
+    
+    <script type="text/javascript" src="/static/jquery-1.8.1.min.js"></script>
+    
+    <script type="text/javascript" src="/static/bootstrap/js/bootstrap.js"></script>
+    
+    
+    
+
 </head>
 
 <body onload="prettyPrint()">
@@ -14,10 +31,12 @@
         
         <div class="header">
             <ul class="tabs">
-              <li class="active"><a href="#">Blog</a></li>
-              <!--<li><a href="#">Portfolio <span class="label warning">External</span></a></li>-->
-              <li><a target="_blank" href="http://twitter.com/jasonbartz">@jasonbartz <span class="label warning">External</span></a></li>
-              <!--<li><a href="#">Contact</a></li>-->
+              <li class="active"><a href="/">Blog</a></li>
+              
+              <li><a href="http://twitter.com/jasonbartz">@jasonbartz</a></li>
+              
+              <li><a href="http://google.com">google</a></li>
+              
             </ul>
             <h1>Jason Bartz</h1>
             
@@ -29,7 +48,7 @@
 
 <div class="headline"><h2>Configuring Coda and SFTP to work with Amazon AWS</h2></div>
 <div class="meta">
-    <div class="datetime">2011-2-4 </div>
+    <div class="datetime">2011-2-4</div>
 </div>
 <div class="post_body">
 
@@ -46,47 +65,43 @@
 <p>Copy that file to your ssh configuration direction</p>
 
 <div class="codeblock">
-                                            <pre class="prettyprint">
-                                                
+        <pre class="prettyprint">
+            
 cp /path/to/your-keypair.pem ~/.ssh/your-keypair.pem
 
-                                            </pre>
-                                      </div>
-                            
+       </pre>
+   </div>
 
 <p>Next, add it to your ssh config file</p>
 
 <div class="codeblock">
-                                            <pre class="prettyprint">
-                                                
+        <pre class="prettyprint">
+            
 vim ~/.ssh/config
 
-                                            </pre>
-                                      </div>
-                            
+       </pre>
+   </div>
 
 <div class="codeblock">
-                                            <pre class="prettyprint">
-                                                
+        <pre class="prettyprint">
+            
 Host thenameyouwannause
 IdentityFile ~/.ssh/your-keypair.pem
 HostName ec2-xxx-xx-xxx-xx.compute-x.amazonaws.com
 User root
 
-                                            </pre>
-                                      </div>
-                            
+       </pre>
+   </div>
 
 <p>You&#8217;ll want to test it:</p>
 
 <div class="codeblock">
-                                            <pre class="prettyprint">
-                                                
+        <pre class="prettyprint">
+            
 ssh thenameyouwannause
 
-                                            </pre>
-                                      </div>
-                            
+       </pre>
+   </div>
 
 <p>It should connect OK and get you to your server.  You may have to modify permissions on that file to get it to work properly.  If not, something is wrong and likely out of the scope of this article.</p>
 <p>Now you&#8217;ll want to add a site to Coda.</p>
