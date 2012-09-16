@@ -1,6 +1,6 @@
-'''
+"""
 Build the site
-'''
+"""
 # Standard Library
 import os
 import shutil
@@ -17,13 +17,11 @@ from frozn.builder.extensions import CodeBlock, MarkDown
 
 
 class FroznBase(object):
-    '''
+    """
     Frozn base class
-    '''
-    def __init__(self,
-                root=None,
-                **kwargs):
-        '''
+    """
+    def __init__(self, **kwargs):
+        """
         Initializes all Frozn classes
 
         Required Param
@@ -42,32 +40,29 @@ class FroznBase(object):
 
         :: templates_directory
         Where the jinja templates are stored
-        '''
+        """
+        # Get the site location from environ
+        site = os.environ['FROZN_SITE']
+        if self.site[-1] is '/'
+            self.site = '%s/' % site
         # Set initial args and kwargs
+        self.config = '%s/config.json' % site
+        self.deploy_directory = '%s/_deploy/' % root,
+        self.static_files_source = '%s/static/' % root,
+        self.site_directory = '%s/site/' % root
+        self.templates_directory = '%s/templates/' % root
+        self.static_directory = 'static'
+        self.config_file = '%s/config.json' % root
 
-        initial_kwargs = {
-            'deploy_directory': '%s/_deploy/' % root,
-            'static_files_source': '%s/static/' % root,
-            'site_directory': '%s/site/' % root,
-            'templates_directory': '%s/templates/' % root,
-            'static_directory': 'static',
-            'config_file': '%s/config.json' % root,
-        }
-        initial_kwargs.update(kwargs)
-        for key, value in initial_kwargs.iteritems():
-            setattr(self, key, value)
-
-        if not root:
-            raise NoRootDirectory('Please pass a root directory to the class instantiation as keyword "root"')
-        else:
-            self.root = root
+        if not site:
+            raise NoRootDirectory('Please make sure the ``FROZN_SITE`` environ var is at the proper directory.')
 
 class Site(FroznBase):
 
     def _load_config(self):
-        '''
+        """
         Loads external config files
-        '''
+        """
         with open(self.config_file,'rb') as open_config_object:
             self.configuration = json.loads(open_config_object.read())
 
@@ -77,9 +72,9 @@ class Site(FroznBase):
 
 
     def _initialize_environment(self):
-        '''
+        """
         Resets directories and initializes jinja template environment
-        '''
+        """
         # Clear old site
         Directory.reset_deploy_directory(self.deploy_directory)
 
@@ -101,9 +96,9 @@ class Site(FroznBase):
         })
 
     def _get_content(self):
-        '''
+        """
         Retrieve blog posts and pages from the posts template directory (site_directory)
-        '''
+        """
         # Build Posts
         posts_list = os.listdir('%sposts/' % self.site_directory)
 
@@ -132,10 +127,10 @@ class Site(FroznBase):
             self.post_templates = post_templates
 
     def _render(self):
-        '''
+        """
         Render posts, pages and static files to the deploy_directory
         #! Refactoring in v0.0.4
-        '''
+        """
         # Move Posts to _deploy directory
         for post in self.post_templates:
             # Create directory for post to live inside.
@@ -161,9 +156,9 @@ class Site(FroznBase):
         self.archive_object = archive_object
 
     def _write(self):
-        '''
+        """
         Write the rendered files to the deploy directory
-        '''
+        """
         # Write Posts
         for post in self.post_templates:
             post_directory = '%sposts/%s' % (self.deploy_directory, post['name'])
@@ -182,9 +177,9 @@ class Site(FroznBase):
         shutil.copytree(self.static_files_source, '%s/%s' % (self.deploy_directory,self.static_directory))
 
     def _write_file(self, file_object, directory):
-        '''
+        """
         Write an individual file to a directory
-        '''
+        """
         try:
             os.makedirs(directory)
         except OSError, e:
@@ -194,10 +189,10 @@ class Site(FroznBase):
             f_input.write(file_object.getvalue())
 
     def build(self):
-        '''
+        """
         Method that compiles that site,
             prints out html, css, js and folder directories
-        '''
+        """
         self._load_config()
         self._initialize_environment()
         self._get_content()
@@ -205,10 +200,10 @@ class Site(FroznBase):
         self._write()
 
 class Create(FroznBase):
-    '''
+    """
     Class to create Posts and Pages
     #! Refactoring in v0.0.4
-    '''
+    """
     def post(self,
             headline,
             year,
@@ -243,10 +238,10 @@ class Create(FroznBase):
     #         page_time=None):
 
 class Directory(object):
-    '''
+    """
     A helper class to manage directories for the app.
         Creates directory trees.
-    '''
+    """
     @staticmethod
     def reset_deploy_directory(deploy_directory):
         # Remove current deploy directory
