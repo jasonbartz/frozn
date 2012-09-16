@@ -95,10 +95,6 @@ class Site(FroznBase):
             print post_date
             post_templates.append(post_template)
 
-
-        # Render Latest Post
-
-
         # Build Templates
         template = site_env.get_template('templates/home.html')
 
