@@ -43,19 +43,21 @@ class FroznBase(object):
         """
         # Get the site location from environ
         site = os.environ['FROZN_SITE']
-        if self.site[-1] is '/'
-            self.site = '%s/' % site
+        if site[-1] is not '/':
+           site = '%s/' % site
+
         # Set initial args and kwargs
-        self.config = '%s/config.json' % site
-        self.deploy_directory = '%s/_deploy/' % root,
-        self.static_files_source = '%s/static/' % root,
-        self.site_directory = '%s/site/' % root
-        self.templates_directory = '%s/templates/' % root
+        self.config = '%sconfig.json' % site
+        self.deploy_directory = '%s_deploy/' % site
+        self.static_files_source = '%sstatic/' % site
+        self.site_directory = site
+        self.templates_directory = '%stemplates/' % site
         self.static_directory = 'static'
-        self.config_file = '%s/config.json' % root
+        self.config_file = '%sconfig.json' % site
 
         if not site:
             raise NoRootDirectory('Please make sure the ``FROZN_SITE`` environ var is at the proper directory.')
+
 
 class Site(FroznBase):
 
@@ -167,14 +169,14 @@ class Site(FroznBase):
         # Write Pages
 
         # Write Archive
-        archive_directory = '%s/archives' % (self.deploy_directory)
+        archive_directory = '%sarchives' % (self.deploy_directory)
         self._write_file(self.archive_object, archive_directory)
 
         # Write Home
         self._write_file(self.home_object, self.deploy_directory)
 
         # Static
-        shutil.copytree(self.static_files_source, '%s/%s' % (self.deploy_directory,self.static_directory))
+        shutil.copytree(self.static_files_source, '%s%s' % (self.deploy_directory,self.static_directory))
 
     def _write_file(self, file_object, directory):
         """
@@ -251,4 +253,4 @@ class Directory(object):
             print e
         # Make dirs needed for deployment
         os.makedirs(deploy_directory)
-        os.makedirs('%s/posts' % deploy_directory)
+        os.makedirs('%sposts' % deploy_directory)

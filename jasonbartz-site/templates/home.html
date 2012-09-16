@@ -1,0 +1,13 @@
+{% extends 'templates/base.html' %}
+{% block content %}
+
+{{ latest_post }}
+
+<h3>Previous posts</h3>
+{% for post in latest_posts_list %}
+    <p><strong>{{ post.date }} - </strong><a href="/posts/{{ post.name }}">{{ post.name }}</a></p>
+{% endfor %}
+
+<p><a href="/archives/">Archives</a></p>
+
+{% endblock content %}

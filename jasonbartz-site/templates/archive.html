@@ -1,0 +1,8 @@
+{% extends 'templates/base.html' %}
+{% block content %}
+
+{% for post in post_list %}
+    <p><strong>{{ post.date }} - </strong><a href="/posts/{{ post.name }}">{{ post.name }}</a></p>
+{% endfor %}
+
+{% endblock content %}

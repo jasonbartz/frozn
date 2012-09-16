@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% block static %}
+    {% if css %}
+    {% for css_item in css %}
+    <link rel="stylesheet" href="/static/{{ css_item }}" type="text/css" media="all" />
+    {% endfor %}
+    {% endif %}
+    {% if javascript %}
+    {% for javascript_item in javascript %}
+    <script type="text/javascript" src="/static/{{ javascript_item }}"></script>
+    {% endfor %}
+    {% endif %}
+    {% endblock static %}
+
+</head>
+
+<body onload="prettyPrint()">
+    <div class="container span8">
+        {% block header %}
+        <div class="header">
+            <ul class="tabs">
+              <li class="active"><a href="/">Blog</a></li>
+              {% for nav_item in nav_list %}
+              <li><a href="{{ nav_item.link }}">{{ nav_item.text }}</a></li>
+              {% endfor %}
+            </ul>
+            <h1>{% block title %}{{ name }}{% endblock title %}</h1>
+            
+        </div>
+        {% endblock header %}
+        
+        <div class="content">
+        {% block content %}
+
+        {% endblock content %}
+        </div>
+    </div>
+</body>
+</html>
