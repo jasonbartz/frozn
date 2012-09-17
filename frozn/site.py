@@ -11,9 +11,9 @@ import cStringIO
 from jinja2 import Environment, PackageLoader, ChoiceLoader, FileSystemLoader
 
 # Local Library
-from frozn.builder.utils import slugify
-from frozn.builder.exceptions import NoRootDirectory
-from frozn.builder.extensions import CodeBlock, MarkDown
+from frozn.utils import slugify
+from frozn.exceptions import NoRootDirectory
+from frozn.extensions import CodeBlock, MarkDown
 
 
 class FroznBase(object):
